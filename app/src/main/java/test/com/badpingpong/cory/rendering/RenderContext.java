@@ -43,16 +43,18 @@ public class RenderContext {
         canvas.drawRGB(r, g, b);
     }
 
-    public void drawRectangle(Vec2 position, float width, float height, int color) {
+    public void setBrushColor(int r, int g, int b) {
+        paint.setARGB(255, r, g, b);
+    }
+
+    public void drawRectangle(Vec2 position, float width, float height) {
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(color);
         canvas.drawRect(position.getX(), position.getY(), position.getX() + width,
                 position.getY() + height, paint);
     }
 
-    public void drawCircle(Vec2 position, float radius, int color) {
+    public void drawCircle(Vec2 position, float radius) {
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(color);
         canvas.drawCircle(position.getX(), position.getY(), radius, paint);
     }
 

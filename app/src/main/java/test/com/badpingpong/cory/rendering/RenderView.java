@@ -25,7 +25,7 @@ public class RenderView<T extends Stage> extends SurfaceView implements SurfaceH
     private final StageFactory<T> stageFactory;
     private T stage;
 
-    private boolean logFPS = false;
+    private boolean logFPS = true;
 
     // for tool use only
     public RenderView(Context context) {
