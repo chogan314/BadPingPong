@@ -19,8 +19,8 @@ public class TouchHandler implements View.OnTouchListener {
     private final int[] touchX = new int[20];
     private final int[] touchY = new int[20];
     private final Pool<TouchEvent> touchEventPool;
-    private final List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
-    private final List<TouchEvent> touchEventsBuffer = new ArrayList<TouchEvent>();
+    private final List<TouchEvent> touchEvents = new ArrayList<>();
+    private final List<TouchEvent> touchEventsBuffer = new ArrayList<>();
 
     public TouchHandler(View view) {
         PoolObjectFactory<TouchEvent> factory = new PoolObjectFactory<TouchEvent>() {
@@ -29,7 +29,7 @@ public class TouchHandler implements View.OnTouchListener {
                 return new TouchEvent();
             }
         };
-        touchEventPool = new Pool<TouchEvent>(factory, 100);
+        touchEventPool = new Pool<>(factory, 100);
         view.setOnTouchListener(this);
     }
 
@@ -87,11 +87,7 @@ public class TouchHandler implements View.OnTouchListener {
 
     public boolean isTouchDown(int pointer) {
         synchronized (this) {
-            if (pointer < 0 || pointer >= 20) {
-                return false;
-            } else {
-                return isTouched[pointer];
-            }
+            return !(pointer < 0 || pointer >= 20) && isTouched[pointer];
         }
     }
 

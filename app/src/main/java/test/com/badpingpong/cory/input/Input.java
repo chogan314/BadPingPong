@@ -31,6 +31,10 @@ public interface Input {
         }
     }
 
+    class ExternalEvent {
+        public String tag;
+    }
+
     boolean isKeyPressed(int keyCode);
 
     boolean isTouchDown(int pointer);
@@ -48,4 +52,6 @@ public interface Input {
     List<KeyEvent> getKeyEvents();
 
     List<TouchEvent> getTouchEvents();
+
+    List<ExternalEvent> getExternalEvents();
 }

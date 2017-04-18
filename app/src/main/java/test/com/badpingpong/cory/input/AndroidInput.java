@@ -1,6 +1,5 @@
 package test.com.badpingpong.cory.input;
 
-import android.content.Context;
 import android.view.View;
 
 import java.util.List;
@@ -11,9 +10,13 @@ import java.util.List;
 
 public class AndroidInput implements Input {
     private final TouchHandler touchHandler;
+    private final AccelHandler accelHandler;
+    private final ExternalEventHandler externalEventHandler;
 
-    public AndroidInput(Context context, View view) {
+    public AndroidInput(View view) {
         touchHandler = new TouchHandler(view);
+        accelHandler = new AccelHandler(view);
+        externalEventHandler = new ExternalEventHandler();
     }
 
     @Override
@@ -39,20 +42,17 @@ public class AndroidInput implements Input {
 
     @Override
     public float getAccelX() {
-        // TODO Auto-generated method stub
-        return 0;
+        return accelHandler.getAccelX();
     }
 
     @Override
     public float getAccelY() {
-        // TODO Auto-generated method stub
-        return 0;
+        return accelHandler.getAccelY();
     }
 
     @Override
     public float getAccelZ() {
-        // TODO Auto-generated method stub
-        return 0;
+        return accelHandler.getAccelZ();
     }
 
     @Override
@@ -64,5 +64,10 @@ public class AndroidInput implements Input {
     @Override
     public List<TouchEvent> getTouchEvents() {
         return touchHandler.getTouchEvents();
+    }
+
+    @Override
+    public List<ExternalEvent> getExternalEvents() {
+        return externalEventHandler.getExternalEvents();
     }
 }

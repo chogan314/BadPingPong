@@ -15,7 +15,7 @@ import test.com.badpingpong.cory.stages.Stage.StageFactory;
  */
 
 public class RenderView<T extends Stage> extends SurfaceView implements SurfaceHolder.Callback, Runnable {
-    private static final float UPDATE_RATE = 1f / 120f;
+    private static final float UPDATE_RATE = 1f / 60f;
 
     private final SurfaceHolder surfaceHolder;
     private Thread renderThread;
@@ -26,6 +26,13 @@ public class RenderView<T extends Stage> extends SurfaceView implements SurfaceH
     private T stage;
 
     private boolean logFPS = false;
+
+    // for tool use only
+    public RenderView(Context context) {
+        super(context);
+        surfaceHolder = null;
+        stageFactory = null;
+    }
 
     public RenderView(Context context, StageFactory<T> stageFactory) {
         super(context);
@@ -97,7 +104,7 @@ public class RenderView<T extends Stage> extends SurfaceView implements SurfaceH
                 accumulatedTime -= UPDATE_RATE;
             }
 
-            stage.present(accumulatedTime);
+            stage.present();
 
             Canvas canvas = surfaceHolder.lockCanvas();
             if (canvas != null) {

@@ -38,7 +38,7 @@ public abstract class Stage {
 
         this.name = name;
 
-        input = new AndroidInput(view.getContext(), view);
+        input = new AndroidInput(view);
 
         frameBuffer = new RenderContext(width, height, Bitmap.Config.ARGB_8888);
     }
@@ -49,7 +49,7 @@ public abstract class Stage {
 
     public abstract void update(float delta);
 
-    public abstract void present(float interpFactor);
+    public abstract void present();
 
     public void dispose() {
         frameBuffer.dispose();
