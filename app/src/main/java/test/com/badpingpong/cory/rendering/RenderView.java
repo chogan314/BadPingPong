@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import test.com.badpingpong.cory.input.ExternalEventHandler.ExternalEventSource;
 import test.com.badpingpong.cory.stages.Stage;
 import test.com.badpingpong.cory.stages.Stage.StageFactory;
 
@@ -22,28 +23,30 @@ public class RenderView<T extends Stage> extends SurfaceView implements SurfaceH
     private volatile boolean running = false;
     private boolean initialized = false;
 
+    private ExternalEventSource externalEventSource;
     private final StageFactory<T> stageFactory;
     private T stage;
 
     private boolean logFPS = true;
 
-    // for tool use only
+    // for tool use only?
     public RenderView(Context context) {
         super(context);
         surfaceHolder = null;
         stageFactory = null;
     }
 
-    public RenderView(Context context, StageFactory<T> stageFactory) {
+    public RenderView(Context context, ExternalEventSource source, StageFactory<T> stageFactory) {
         super(context);
         this.stageFactory = stageFactory;
+        this.externalEventSource = source;
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        stage = stageFactory.createStage(this);
+        stage = stageFactory.createStage(this, externalEventSource);
         running = true;
         renderThread = new Thread(this, stage.getName());
         renderThread.start();
@@ -96,6 +99,8 @@ public class RenderView<T extends Stage> extends SurfaceView implements SurfaceH
                     frameTime -= 1;
                 }
             }
+
+            stage.handleInput();
 
             accumulatedTime += delta;
 

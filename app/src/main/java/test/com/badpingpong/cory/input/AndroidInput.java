@@ -4,6 +4,8 @@ import android.view.View;
 
 import java.util.List;
 
+import test.com.badpingpong.cory.input.ExternalEventHandler.ExternalEventSource;
+
 /**
  * Created by Cory on 4/17/2017.
  */
@@ -13,10 +15,11 @@ public class AndroidInput implements Input {
     private final AccelHandler accelHandler;
     private final ExternalEventHandler externalEventHandler;
 
-    public AndroidInput(View view) {
+    public AndroidInput(View view, ExternalEventSource source) {
         touchHandler = new TouchHandler(view);
         accelHandler = new AccelHandler(view);
         externalEventHandler = new ExternalEventHandler();
+        source.registerListener(externalEventHandler);
     }
 
     @Override

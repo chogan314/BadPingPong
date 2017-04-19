@@ -12,6 +12,10 @@ import test.com.badpingpong.cory.util.Pool.PoolObjectFactory;
  */
 
 public class ExternalEventHandler {
+    public interface ExternalEventSource {
+        void registerListener(ExternalEventHandler handler);
+    }
+
     private final Pool<ExternalEvent> externalEventPool;
     private final List<ExternalEvent> externalEvents = new ArrayList<>();
     private final List<ExternalEvent> externalEventsBuffer = new ArrayList<>();
@@ -25,6 +29,12 @@ public class ExternalEventHandler {
         };
 
         externalEventPool = new Pool<>(factory, 100);
+    }
+
+    public ExternalEvent createEvent(String tag) {
+        ExternalEvent event = externalEventPool.newObject();
+        event.tag = tag;
+        return event;
     }
 
     public void queueEvent(ExternalEvent event) {

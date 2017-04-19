@@ -3,8 +3,12 @@ package test.com.badpingpong.cory.stages;
 import android.graphics.Bitmap;
 import android.view.View;
 
-import test.com.badpingpong.cory.input.Input;
+import java.util.List;
+
 import test.com.badpingpong.cory.input.AndroidInput;
+import test.com.badpingpong.cory.input.ExternalEventHandler.ExternalEventSource;
+import test.com.badpingpong.cory.input.Input;
+import test.com.badpingpong.cory.input.InputHandler;
 import test.com.badpingpong.cory.math.Vec2;
 import test.com.badpingpong.cory.rendering.RenderContext;
 
@@ -15,7 +19,7 @@ import test.com.badpingpong.cory.rendering.RenderContext;
 
 public abstract class Stage {
     public interface StageFactory<T extends Stage> {
-        T createStage(View view);
+        T createStage(View view, ExternalEventSource source);
     }
 
     protected RenderContext frameBuffer;
@@ -23,11 +27,12 @@ public abstract class Stage {
     protected final Vec2 topCenter, centerRight, bottomCenter, centerLeft;
     protected Input input;
     private final String name;
+    private InputHandler inputHandler;
 
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
-    public Stage(View view, String name) {
+    public Stage(View view, ExternalEventSource source, String name) {
         this.width = view.getWidth();
         this.height = view.getHeight();
 
@@ -38,9 +43,44 @@ public abstract class Stage {
 
         this.name = name;
 
-        input = new AndroidInput(view);
+        input = new AndroidInput(view, source);
 
         frameBuffer = new RenderContext(width, height, Bitmap.Config.ARGB_8888);
+    }
+
+    public void registerInputHandler(InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
+    }
+
+    public void handleInput() {
+        if (inputHandler != null) {
+            List<Input.ExternalEvent> externalEvents = input.getExternalEvents();
+            List<Input.TouchEvent> touchEvents = input.getTouchEvents();
+            List<Input.KeyEvent> keyEvents = input.getKeyEvents();
+
+            int len = externalEvents.size();
+            for (int i = 0; i < len; i++) {
+                inputHandler.onExternalEvent(externalEvents.get(i));
+            }
+
+            len = touchEvents.size();
+            for (int i = 0; i < len; i++) {
+                inputHandler.onTouchEvent(touchEvents.get(i));
+            }
+
+//            len = keyEvents.size();
+//            for (int i = 0; i < len; i++) {
+//                inputHandler.onKeyEvent(keyEvents.get(i));
+//            }
+        }
+    }
+
+    protected float convertWidth(float x) {
+        return width * x;
+    }
+
+    protected float convertHeight(float y) {
+        return height * y;
     }
 
     public abstract void resume();
