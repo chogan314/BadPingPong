@@ -16,7 +16,7 @@ import test.com.badpingpong.cory.stages.Stage.StageFactory;
  */
 
 public class RenderView<T extends Stage> extends SurfaceView implements SurfaceHolder.Callback, Runnable {
-    private static final float UPDATE_RATE = 1f / 60f;
+    private static final float UPDATE_RATE = 1f / 120f;
 
     private final SurfaceHolder surfaceHolder;
     private Thread renderThread;
@@ -105,7 +105,7 @@ public class RenderView<T extends Stage> extends SurfaceView implements SurfaceH
             accumulatedTime += delta;
 
             while (accumulatedTime >= UPDATE_RATE) {
-                stage.update(accumulatedTime);
+                stage.update(UPDATE_RATE);
                 accumulatedTime -= UPDATE_RATE;
             }
 

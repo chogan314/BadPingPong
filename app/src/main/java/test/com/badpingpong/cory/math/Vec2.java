@@ -93,6 +93,16 @@ public class Vec2 {
         return this;
     }
 
+    public Vec2 reflectY() {
+        y = -y;
+        return this;
+    }
+
+    public Vec2 reflectX() {
+        x = -x;
+        return this;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

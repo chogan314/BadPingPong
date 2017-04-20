@@ -3,8 +3,8 @@ package test.com.badpingpong.cory.rendering;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 
+import test.com.badpingpong.cory.math.Rect;
 import test.com.badpingpong.cory.math.Vec2;
 
 /**
@@ -15,20 +15,20 @@ public class RenderContext {
     private final Bitmap source;
     private final Canvas canvas;
     private final Paint paint;
-    private final Rect bounds;
+    private final android.graphics.Rect bounds;
 
     public RenderContext(int width, int height, Bitmap.Config config) {
         source = Bitmap.createBitmap(width, height, config);
         canvas = new Canvas(source);
         paint = new Paint();
-        bounds = new Rect();
+        bounds = new android.graphics.Rect();
     }
 
     private RenderContext(RenderContext parent) {
         source = parent.source.copy(parent.source.getConfig(), true);
         canvas = new Canvas(source);
         paint = new Paint(parent.paint);
-        bounds = new Rect(parent.bounds);
+        bounds = new android.graphics.Rect(parent.bounds);
     }
 
     public RenderContext copy() {
@@ -51,6 +51,13 @@ public class RenderContext {
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(position.getX(), position.getY(), position.getX() + width,
                 position.getY() + height, paint);
+    }
+
+    public void drawRectangle(Rect rect) {
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawRect(rect.getPosition().getX(), rect.getPosition().getY(),
+                rect.getPosition().getX() + rect.getWidth(),
+                rect.getPosition().getY() + rect.getHeight(), paint);
     }
 
     public void drawCircle(Vec2 position, float radius) {
