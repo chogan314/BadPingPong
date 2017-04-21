@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="test.com.badpingpong.cory.activities.PongActivity">
+
+    <FrameLayout
+        android:id="@+id/pong_frame"
+        app:layout_widthPercent="80%"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/pong_controls"
+        android:layout_toEndOf="@+id/pong_controls">
+    </FrameLayout>
+
+    <android.support.percent.PercentRelativeLayout
+        app:layout_widthPercent="20%"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/pong_controls">
+
+        <android.support.percent.PercentRelativeLayout
+            android:layout_width="match_parent"
+            app:layout_heightPercent="50%"
+            android:orientation="vertical"
+            android:id="@+id/top_frame">
+
+            <Button
+                android:id="@+id/up_button"
+                app:layout_widthPercent = "80%"
+                app:layout_heightPercent = "80%"
+                android:layout_centerInParent="true"
+                android:text="UP"/>
+
+        </android.support.percent.PercentRelativeLayout>
+
+        <android.support.percent.PercentRelativeLayout
+            android:layout_width="match_parent"
+            app:layout_heightPercent="50%"
+            android:layout_below="@+id/top_frame">
+
+            <Button
+                android:id="@+id/down_buton"
+                app:layout_widthPercent = "80%"
+                app:layout_heightPercent = "80%"
+                android:layout_centerInParent="true"
+                android:text="DOWN"/>
+
+        </android.support.percent.PercentRelativeLayout>
+
+    </android.support.percent.PercentRelativeLayout>
+
+
+</android.support.percent.PercentRelativeLayout>
