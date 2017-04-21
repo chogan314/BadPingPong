@@ -30,18 +30,22 @@ public class Rect {
                 point.getY() <= pos.getY() + height;
     }
 
-    public boolean overlaps(Rect other) {
-        boolean overlapsX = (pos.getX() <= other.pos.getX() + other.width
+    public boolean overlapsX(Rect other) {
+        return (pos.getX() <= other.pos.getX() + other.width
                 && pos.getX() >= other.pos.getX())
                 || (pos.getX() + width <= other.pos.getX() + other.width
                 && pos.getX() + width >= other.pos.getX());
+    }
 
-        boolean overlapsY = (pos.getY() <= other.pos.getY() + other.height
+    public boolean overlapsY(Rect other) {
+        return (pos.getY() <= other.pos.getY() + other.height
                 && pos.getY() >= other.pos.getY())
                 || (pos.getY() + height <= other.pos.getY() + other.height
                 && pos.getY() + height >= other.pos.getY());
+    }
 
-        return overlapsX && overlapsY;
+    public boolean overlaps(Rect other) {
+        return overlapsX(other) && overlapsY(other);
     }
 
     public boolean contains(Rect other) {
@@ -101,7 +105,7 @@ public class Rect {
     }
 
     public Vec2 getCenter() {
-        return pos.cpy().add(pos.getX() + width / 2, pos.getY() + height / 2);
+        return pos.cpy().add(width / 2, height / 2);
     }
 
     public Vec2 getPosition() {

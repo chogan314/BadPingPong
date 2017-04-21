@@ -17,6 +17,7 @@ public class PongStage extends Stage implements InputHandler {
     private static final String STAGE_NAME = "Pong";
     private final float PADDLE_SPEED;
     private final float BALL_SPEED;
+    private final float MAX_BOUNCE_ANGLE = (float) Math.toRadians(75);
 
     private Rect fieldBounds;
     private Rect playerPaddle;
@@ -24,13 +25,14 @@ public class PongStage extends Stage implements InputHandler {
     private Rect ball;
     private Vec2 ballVelocity;
     float velocity;
+    boolean passedPlayerFlag = false;
+    boolean passedCPUFlag = false;
 
     public PongStage(View view, ExternalEventSource source) {
         super(view, source, STAGE_NAME);
         PADDLE_SPEED = convertHeight(0.4f);
         BALL_SPEED = convertWidth(0.6f);
 
-        frameBuffer.setAntiAlias(true);
         registerInputHandler(this);
 
         fieldBounds = new Rect(width, height);
@@ -45,18 +47,36 @@ public class PongStage extends Stage implements InputHandler {
         cpuPaddle.centerYWith(fieldBounds);
 
         ball = new Rect(convertWidth(0.05f), convertWidth(0.05f));
-        ball.centerWith(fieldBounds);
         ballVelocity = new Vec2();
-        randomizeBallVelocity();
+        resetBall();
     }
 
-    private void randomizeBallVelocity() {
-        float rand = (float) Math.random();
-        ballVelocity.set(rand, rand * (float) Math.random()).normalize().scl(BALL_SPEED);
+    private void resetBall() {
+        passedPlayerFlag = false;
+        passedCPUFlag = false;
+        ball.centerWith(fieldBounds);
+        float rand = (float) Math.random() - 0.5f;
+        ballVelocity.set(rand, rand * ((float) Math.random() - 0.5f)).normalize().scl(BALL_SPEED);
     }
 
-    private void doPaddleRebound(float toCenter) {
-        ballVelocity.reflectX();
+    private void doPaddleRebound(boolean playerPaddle) {
+        Rect paddle;
+        if (playerPaddle) {
+            paddle = this.playerPaddle;
+        } else {
+            paddle = cpuPaddle;
+        }
+
+        float yFromPaddleCenter = Math.abs(ball.getCenter().cpy().sub(paddle.getCenter()).getY());
+        float percentMaxDistance = yFromPaddleCenter /
+                (paddle.getHeight() / 2 + ball.getHeight() / 2);
+
+        float xDirection = playerPaddle ? 1 : -1;
+        float yDirection = ball.getCenter().getY() < paddle.getCenter().getY() ? -1 : 1;
+
+        float angle = MAX_BOUNCE_ANGLE * percentMaxDistance;
+        ballVelocity.set((float) Math.cos(angle) * xDirection, (float) Math.sin(angle) * yDirection)
+                .normalize().scl(BALL_SPEED);
     }
 
     @Override
@@ -87,21 +107,23 @@ public class PongStage extends Stage implements InputHandler {
             ball.alignBottomWith(fieldBounds);
             ballVelocity.reflectY();
         } else if (ball.extendsLeftOf(fieldBounds)) {
-            ball.centerWith(fieldBounds);
-            randomizeBallVelocity();
+            resetBall();
         } else if (ball.extendsRightOF(fieldBounds)) {
-            ball.centerWith(fieldBounds);
-            randomizeBallVelocity();
+            resetBall();
         }
 
-        if (ball.overlaps(playerPaddle)) {
+        if (ball.overlaps(playerPaddle) && !passedPlayerFlag) {
             ball.alignLeftWith(playerPaddle);
             ball.getPosition().add(playerPaddle.getWidth(), 0);
-            doPaddleRebound(1);
-        } else if (ball.overlaps(cpuPaddle)) {
+            doPaddleRebound(true);
+        } else if (ball.overlaps(cpuPaddle) && !passedCPUFlag) {
             ball.alignRightWith(cpuPaddle);
             ball.getPosition().sub(cpuPaddle.getWidth(), 0);
-            doPaddleRebound(-1);
+            doPaddleRebound(false);
+        } else if (ball.overlapsX(playerPaddle)) {
+            passedPlayerFlag = true;
+        } else if (ball.overlapsX(cpuPaddle)) {
+            passedCPUFlag = true;
         }
 
         float cpuDirection = 0;
@@ -152,7 +174,7 @@ public class PongStage extends Stage implements InputHandler {
 
     @Override
     public void onTouchEvent(Input.TouchEvent event) {
-        playerPaddle.getPosition().set(event.x, event.y);
+
     }
 
     @Override
